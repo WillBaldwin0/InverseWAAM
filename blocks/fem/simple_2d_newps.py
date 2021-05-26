@@ -430,7 +430,7 @@ class Experiment_ortho2d_extra:
         plt.colorbar()
         plt.show()
         
-    def scatter_measurement(self, measurement, direction, cbar=None):
+    def scatter_measurement(self, measurement, direction, cbar=None, orientation='horizontal', **kwargs):
         assert direction in [0,1]
         assert measurement.shape == self._measurement_scheme.shape
         
@@ -451,24 +451,24 @@ class Experiment_ortho2d_extra:
         #plt.colorbar()
         #plt.show()        
         
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(15,4))
         
-        thing = ax.scatter(coordinates[:,1], coordinates[:,0], c=used_displacements, s=5, cmap='RdBu')
+        thing = ax.scatter(coordinates[:,1], coordinates[:,0], c=used_displacements, s=5, cmap='plasma', **kwargs)
         plt.xlim([0, self.strip_dimensions[1]])
         plt.ylim([-self.strip_dimensions[0]/2, self.strip_dimensions[0]/2])
         
-        ax.set_xlabel('y')
-        ax.set_ylabel('x')
+        ax.set_xlabel('y (mm)')
+        ax.set_ylabel('x (mm)')
         
         if cbar is None:            
-            fig.colorbar(thing)
+            fig.colorbar(thing, orientation=orientation)
             ax.set_aspect('equal')
         else:
-            fig.colorbar(thing)
+            fig.colorbar(thing, orientation=orientation)
             thing.set_clim(cbar.vmin, cbar.vmax)
             ax.set_aspect('equal')
             
-        thing.colorbar.ax.set_ylabel(str(direction))
+        thing.colorbar.ax.set_ylabel('y-displacement', labelpad=15)
       
         plt.show() 
         return thing.colorbar
@@ -546,7 +546,7 @@ class Experiment_ortho2d_extra:
         X, Y = np.meshgrid(xr, yr)
         vals = interpn((self.x_vals, self.y_vals), field, np.array([X.flatten(), Y.flatten()]).transpose())
         
-        fig, ax = plt.subplots(figsize=(13,2))        
+        fig, ax = plt.subplots(figsize=(15,4))        
         ax.set_aspect('equal')
         
         levels = 15
@@ -554,14 +554,14 @@ class Experiment_ortho2d_extra:
         if (cbar is not None) and (keep_boundaries):    
             levels = cbar._boundaries
             
-        thing = ax.contourf(Y,X,vals.reshape(X.shape), **kwargs, levels=levels)        
+        thing = ax.contourf(Y,X,vals.reshape(X.shape), **kwargs, levels=levels)  
         fig.colorbar(thing, orientation=orientation)
         
         if (cbar is not None) and (not keep_boundaries):   
             thing.set_clim(cbar.vmin, cbar.vmax)
         
-        ax.set_xlabel('y')
-        ax.set_ylabel('x')
+        ax.set_xlabel('y (mm)')
+        ax.set_ylabel('x (mm)')
         # thing.colorbar.ax.set_ylabel(self.coef_names[coef_index])       
         plt.title(title)
         
