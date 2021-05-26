@@ -469,9 +469,9 @@ class Experiment_ortho2d_extra:
             ax.set_aspect('equal')
             
         if orientation=='vertical':
-            thing.colorbar.ax.set_ylabel('y-displacement', labelpad=15)
+            thing.colorbar.ax.set_ylabel('y-displacement (mm)', labelpad=15)
         else:
-            thing.colorbar.ax.set_xlabel('y-displacement', labelpad=15)
+            thing.colorbar.ax.set_xlabel('y-displacement (mm)', labelpad=15)
       
         plt.show() 
         return thing.colorbar

@@ -10,7 +10,7 @@ from matplotlib.ticker import MaxNLocator
     have small components compared to Ey in this set up """
     
 #%% make data object and get the relevant measurement
-name = "H4_90_F1"
+name = "H4_90_F2"
 data_obj = ExpData2(name, fringe=20)
 gvec = gradient_vector_svd(data_obj.centered_trunc_disps)
 
@@ -26,6 +26,11 @@ ranks = {'20':16, '10':30, '6.7':50, '5':50}
 cutoffs = {'20':16, '10':43, '6.7':81, '5':131}
 nxs = {'20':2, '10':3, '6.7':4, '5':5}
 nys = {'20':9, '10':17, '6.7':25, '5':33}
+
+#%%
+
+plt.rcParams['font.family'] = 'serif'
+plt.rcParams['font.size'] = 18
 
 #%% make the experiment object and set meaurement scheme and model
 
@@ -56,9 +61,13 @@ for vec in vectors:
     
 fracs = np.asarray(fracs)
 
-plt.stackplot(range(4*n),fracs[:,0],fracs[:,1],fracs[:,2],fracs[:,3])
-plt.legend(['E_x', 'E_y', 'nu', 'G'])
-plt.xlabel('singular vector rank')
+fig, ax = plt.subplots()
+
+ax.stackplot(range(4*n),fracs[:,0],fracs[:,1],fracs[:,2],fracs[:,3])
+ax.legend(['E_x', 'E_y', 'nu', 'G'])
+ax.set_xlabel('singular vector rank')
+ax.set_ylabel('?')
+ax.set_aspect(30)
 plt.show()
 
 
