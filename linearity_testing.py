@@ -3,6 +3,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import linregress
 from blocks.datatools.analysis import ExpData2, gradient_vector_svd
+
+#%%
+
+plt.rcParams['font.family'] = 'serif'
+plt.rcParams['font.size'] = 14
+
     
 #%% make data object and get the relevant measurement
 
@@ -137,8 +143,10 @@ plt.show()
 plt.figure()
 plt.plot(costs, label='actual cost at solution')
 plt.plot(pred_costs, label='anticipated cost at solution')
-plt.xlabel('rank')
+plt.xlabel('singular vector rank')
 plt.ylabel('cost')
+plt.xlim([0,50])
+plt.ylim([0.08, 0.20])
 plt.legend()
 plt.show()
 

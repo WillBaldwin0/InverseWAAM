@@ -66,7 +66,7 @@ fig, ax = plt.subplots()
 ax.stackplot(range(4*n),fracs[:,0],fracs[:,1],fracs[:,2],fracs[:,3])
 ax.legend(['E_x', 'E_y', 'nu', 'G'])
 ax.set_xlabel('singular vector rank')
-ax.set_ylabel('?')
+ax.set_ylabel('composition of singular vector')
 ax.set_aspect(30)
 plt.show()
 
