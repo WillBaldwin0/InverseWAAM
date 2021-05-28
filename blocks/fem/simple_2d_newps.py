@@ -430,7 +430,7 @@ class Experiment_ortho2d_extra:
         plt.colorbar()
         plt.show()
         
-    def scatter_measurement(self, measurement, direction, cbar=None, orientation='horizontal', **kwargs):
+    def scatter_measurement(self, measurement, direction, fringe=True, cbar=None, orientation='horizontal', **kwargs):
         assert direction in [0,1]
         assert measurement.shape == self._measurement_scheme.shape
         
@@ -456,6 +456,8 @@ class Experiment_ortho2d_extra:
         thing = ax.scatter(coordinates[:,1], coordinates[:,0], c=used_displacements, s=5, cmap='plasma', **kwargs)
         plt.xlim([0, self.strip_dimensions[1]])
         plt.ylim([-self.strip_dimensions[0]/2, self.strip_dimensions[0]/2])
+        if not fringe:
+            plt.xlim([self.fringe, self.strip_dimensions[1]-self.fringe])
         
         ax.set_xlabel('y (mm)')
         ax.set_ylabel('x (mm)')
