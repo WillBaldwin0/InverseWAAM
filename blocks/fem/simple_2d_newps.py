@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 
 
-    
+from matplotlib import ticker
     
 
     
@@ -477,6 +477,54 @@ class Experiment_ortho2d_extra:
       
         plt.show() 
         return thing.colorbar
+    
+    def scatter_measurement_vertical(self, measurement, direction, fringe=True, cbar=None, orientation='horizontal', **kwargs):
+        assert direction in [0,1]
+        assert measurement.shape == self._measurement_scheme.shape
+        
+        all_displacements = self.embed_measurement_in_displacement(measurement)         
+        measured_x_points, measured_y_points = self._calc_xy_measured(self._measurement_scheme)
+        
+        if direction == 0:
+            assert measured_x_points.shape[0] > 0            
+            coordinates = self.all_coordinates[measured_x_points, :]
+            used_displacements = all_displacements[measured_x_points, 0]
+            
+        if direction == 1:
+            assert measured_y_points.shape[0] > 0            
+            coordinates = self.all_coordinates[measured_y_points, :]
+            used_displacements = all_displacements[measured_y_points, 1]
+        
+        #plt.figure()        
+        #plt.colorbar()
+        #plt.show()        
+        
+        fig, ax = plt.subplots(figsize=(15,4))
+        
+        thing = ax.scatter(coordinates[:,0], coordinates[:,1], c=used_displacements, s=5, cmap='plasma', **kwargs)
+        plt.ylim([0, self.strip_dimensions[1]])
+        plt.xlim([-self.strip_dimensions[0]/2, self.strip_dimensions[0]/2])
+        if not fringe:
+            plt.ylim([self.fringe, self.strip_dimensions[1]-self.fringe])
+        
+        ax.set_xlabel('x (mm)')
+        ax.set_ylabel('y (mm)')
+        
+        if cbar is None:            
+            fig.colorbar(thing, orientation=orientation)
+            ax.set_aspect('equal')
+        else:
+            fig.colorbar(thing, orientation=orientation)
+            thing.set_clim(cbar.vmin, cbar.vmax)
+            ax.set_aspect('equal')
+            
+        if orientation=='vertical':
+            thing.colorbar.ax.set_ylabel('y-displacement (mm)', labelpad=15)
+        else:
+            thing.colorbar.ax.set_xlabel('y-displacement (mm)', labelpad=15)
+      
+        plt.show() 
+        return thing.colorbar
         
         
         
@@ -567,8 +615,43 @@ class Experiment_ortho2d_extra:
         
         ax.set_xlabel('y (mm)')
         ax.set_ylabel('x (mm)')
-        # thing.colorbar.ax.set_ylabel(self.coef_names[coef_index])       
+        thing.colorbar.ax.set_xlabel('Axial Youngs Modulus')       
         plt.title(title)
+        
+        plt.show() 
+        
+        return thing.colorbar
+    
+    def contour_b_vec_vertical(self, b_vec, coef_index, cbar=None, fringe=False, keep_boundaries=0, orientation='horizontal', **kwargs):
+        field = b_vec.reshape((4, self.nx, self.ny))[coef_index]
+        
+        plot_density = 1.        
+        if fringe:
+            plot_ranges = [-self.strip_dimensions[0]/2, self.strip_dimensions[0]/2, 0, self.strip_dimensions[1]]
+        else:
+            plot_ranges = [-self.strip_dimensions[0]/2, self.strip_dimensions[0]/2, self.fringe, self.strip_dimensions[1] - self.fringe]   
+        xr = np.arange(plot_ranges[0], plot_ranges[1], plot_density)
+        yr = np.arange(plot_ranges[2], plot_ranges[3], plot_density)
+        X, Y = np.meshgrid(xr, yr)
+        vals = interpn((self.x_vals, self.y_vals), field, np.array([X.flatten(), Y.flatten()]).transpose())
+        
+        fig, ax = plt.subplots(figsize=(8,10))        
+        ax.set_aspect('equal')
+        
+        levels = 15
+        
+        if (cbar is not None) and (keep_boundaries):    
+            levels = cbar._boundaries
+            
+        thing = ax.contourf(X,Y,vals.reshape(X.shape), **kwargs, levels=levels)  
+        cb = fig.colorbar(thing, orientation=orientation)
+        
+        if (cbar is not None) and (not keep_boundaries):   
+            thing.set_clim(cbar.vmin, cbar.vmax)
+        
+        ax.set_xlabel('x (mm)')
+        ax.set_ylabel('y (mm)')
+        #thing.colorbar.ax.set_ylabel('Axial Youngs Modulus')
         
         plt.show() 
         

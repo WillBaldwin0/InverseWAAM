@@ -70,6 +70,28 @@ ax.set_ylabel('composition of singular vector')
 ax.set_aspect(30)
 plt.show()
 
+#%%
+
+fracs2 = []
+xs = []
+i=0
+for f in fracs:
+    fracs2.append(f)
+    fracs2.append(f)
+    xs.append(i+0.01)
+    xs.append(i+1)
+    i+=1
+    
+fracs2 = np.asarray(fracs2)
+
+fig, ax = plt.subplots()
+ax.stackplot(xs,fracs2[:,0],fracs2[:,1],fracs2[:,2],fracs2[:,3])
+ax.legend(['E_x', 'E_y', 'nu', 'G'])
+ax.set_xlabel('singular vector rank')
+ax.set_ylabel('composition of singular vector')
+ax.set_aspect(30)
+plt.show()
+
 
 #%%
 r = 100#ranks[mod_name]
